@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Users</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <h1>Users</h1>
+  <button onclick="resetProblems()">Reset Problems</button>
+  <button onclick="randomizeProblems()">Life</button>
+  <p id="message"></p>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Age</th>
+        <th>Gender</th>
+        <th>Problems</th>
+      </tr>
+    </thead>
+    <tbody id="users-table">
+      <% users.forEach(user => { %>
+        <tr>
+          <td><%= user.id %></td>
+          <td><%= user.firstName %></td>
+          <td><%= user.lastName %></td>
+          <td><%= user.age %></td>
+          <td><%= user.gender %></td>
+          <td><%= user.problems %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+  <script>
+    async function resetProblems() {
+      const response = await fetch('/users/reset-problems');
+      const data = await response.json();
+      document.getElementById('message').innerText = data.message;
+      updateTable(data.users);
+    }
+
+    async function randomizeProblems() {
+      const response = await fetch('/users/randomize-problems');
+      const data = await response.json();
+      updateTable(data.users);
+    }
+
+    async function fetchUsers() {
+      const response = await fetch('/users');
+      const data = await response.json();
+      updateTable(data.users);
+    }
+
+    function updateTable(users) {
+      document.getElementById('users-table').innerHTML = users.map(user => `
+        <tr>
+          <td>${user.id}</td>
+          <td>${user.firstName}</td>
+          <td>${user.lastName}</td>
+          <td>${user.age}</td>
+          <td>${user.gender}</td>
+          <td>${user.problems}</td>
+        </tr>
+      `).join('');
+    }
+
+    
+    fetchUsers();
+  </script>
+</body>
+</html>
